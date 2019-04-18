@@ -1,9 +1,9 @@
-import mysql.connector
+import psycopg2
 import datetime
 import config
 
 def create_db_table():
-    connection = mysql.connector.connect(host=config.Database.host, user=config.Database.user,
+    connection = psycopg2.connect(host=config.Database.host, user=config.Database.user,
                                  password=config.Database.password, database=config.Database.database)
     cursor = connection.cursor(buffered=True)
     try:
@@ -12,7 +12,7 @@ def create_db_table():
         res = cursor.fetchone()
         print("Res is: ",res)
         print("Table already exist!")
-    except mysql.connector.errors.ProgrammingError:
+    except psycopg2.errors.ProgrammingError:
         connection.rollback()
         create_table_sql = "CREATE TABLE dictionary (word VARCHAR(50), cid VARCHAR(10), last_repeat DATETIME, iteration INTEGER, next_repeat DATETIME);"
         cursor.execute(create_table_sql)
@@ -22,7 +22,7 @@ def create_db_table():
 
 
 def insert_word(message):
-    connection = mysql.connector.connect(host=config.Database.host, user=config.Database.user,
+    connection = psycopg2.connect(host=config.Database.host, user=config.Database.user,
                                  password=config.Database.password, database=config.Database.database)
     cursor = connection.cursor(buffered=True)
     last_dt = datetime.datetime.now()
@@ -37,7 +37,7 @@ def insert_word(message):
     connection.close()
 
 def get_words_by_cid(cid):
-    connection = mysql.connector.connect(host=config.Database.host, user=config.Database.user,
+    connection = psycopg2.connect(host=config.Database.host, user=config.Database.user,
                                  password=config.Database.password, database=config.Database.database)
     cursor = connection.cursor(buffered=True)
     cursor.execute("SELECT word from dictionary WHERE cid = %(cid)s;", {'cid': cid})
@@ -50,7 +50,7 @@ def get_words_by_cid(cid):
     return words
 
 def get_words():
-    connection = mysql.connector.connect(host=config.Database.host, user=config.Database.user,
+    connection = psycopg2.connect(host=config.Database.host, user=config.Database.user,
                                  password=config.Database.password, database=config.Database.database)
     cursor = connection.cursor(buffered=True)
     res = {}
