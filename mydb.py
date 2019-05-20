@@ -5,7 +5,8 @@ import config
 def create_db_table():
     connection = psycopg2.connect(host=config.Database.host, user=config.Database.user,
                                  password=config.Database.password, database=config.Database.database)
-    cursor = connection.cursor(buffered=True)
+    # cursor = connection.cursor(buffered=True)
+    cursor = connection.cursor()
     try:
         select_sql = "SELECT * FROM dictionary;"
         cursor.execute(select_sql)
