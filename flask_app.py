@@ -3,6 +3,7 @@ import telebot
 import config
 import mydb
 import re
+import os
 
 mydb.create_db_table()
 bot = telebot.TeleBot(config.token, threaded=False)
@@ -20,8 +21,6 @@ def telegram_webhook():
     else:
         Flask.abort(403)
 
-if __name__ == '__main__':
-    app.run()
 # def remember_words(message):
 #     words = mydb.get_words_by_cid(message.chat.id)
 #     bot.send_message(message.chat.id, "Время повторить слова!")
@@ -50,3 +49,5 @@ def add_word(message):
     bot.send_message(message.chat.id, "Введите слово")
     bot.register_next_step_handler(message, check_word)
 
+if __name__ == '__main__':
+    app.run(debug=True, port=os.environ['PORT'])
