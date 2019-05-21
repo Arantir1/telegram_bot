@@ -20,6 +20,8 @@ def telegram_webhook():
     else:
         Flask.abort(403)
 
+if __name__ == '__main__':
+    app.run()
 # def remember_words(message):
 #     words = mydb.get_words_by_cid(message.chat.id)
 #     bot.send_message(message.chat.id, "Время повторить слова!")
