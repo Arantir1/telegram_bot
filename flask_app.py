@@ -7,7 +7,7 @@ import re
 mydb.create_db_table()
 bot = telebot.TeleBot(config.token, threaded=False)
 bot.remove_webhook()
-bot.set_webhook(url="argman.pythonanywhere.com/{}".format(config.secret), max_connections=1)
+bot.set_webhook(url="telegarmbot.herokuapp.com/{}".format(config.secret), max_connections=1)
 
 app = Flask(__name__)
 @app.route('/{}'.format(config.secret), methods=["POST"])
