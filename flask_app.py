@@ -7,8 +7,7 @@ import os
 
 mydb.create_db_table()
 bot = telebot.TeleBot(config.token, threaded=False)
-# bot.remove_webhook()
-# sleep(1)
+bot.remove_webhook()
 bot.set_webhook(url="telegarmbot.herokuapp.com/{}".format(config.secret), max_connections=1)
 
 app = Flask(__name__)
@@ -49,6 +48,3 @@ def command_start(message):
 def add_word(message):
     bot.send_message(message.chat.id, "Введите слово")
     bot.register_next_step_handler(message, check_word)
-
-if __name__ == '__main__':
-    app.run(debug=True, port=os.environ['PORT'])
