@@ -7,22 +7,15 @@ import os
 import logging
 
 mydb.create_db_table()
-bot = telebot.TeleBot(config.token, threaded=False)
+bot = telebot.TeleBot(config.token)
 logger = telebot.logger
 telebot.logger.setLevel(logging.DEBUG)
-bot.remove_webhook()
-bot.set_webhook(url="telegarmbot.herokuapp.com/{}".format(config.secret), max_connections=1)
 
 app = Flask(__name__)
 @app.route('/{}'.format(config.secret), methods=["POST"])
 def telegram_webhook():
-    if request.headers.get('content-type') == 'application/json':
-        json_string = request.get_data().decode('utf-8')
-        update = telebot.types.Update.de_json(json_string)
-        bot.process_new_updates([update])
-        return 'OK'
-    else:
-        Flask.abort(403)
+    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+    return "!", 200
 
 # def remember_words(message):
 #     words = mydb.get_words_by_cid(message.chat.id)
@@ -51,3 +44,12 @@ def command_start(message):
 def add_word(message):
     bot.send_message(message.chat.id, "Введите слово")
     bot.register_next_step_handler(message, check_word)
+
+@app.route("/")
+def webhook():
+    bot.remove_webhook()
+    bot.set_webhook(url="telegarmbot.herokuapp.com/{}".format(config.secret), max_connections=1)
+    return "!", 200
+
+if __name__ == "__main__":
+    server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
