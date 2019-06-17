@@ -13,7 +13,7 @@ def create_db_table():
         res = cursor.fetchone()
         print("Res is: ",res)
         print("Table already exist!")
-    except psycopg2.ProgrammingError:
+    except psycopg2.Errors.UndefinedTable:
         connection.rollback()
         create_table_sql = "CREATE TABLE dictionary (word VARCHAR, cid VARCHAR, last_repeat DATETIME, iteration INTEGER, next_repeat DATETIME);"
         cursor.execute(create_table_sql)
