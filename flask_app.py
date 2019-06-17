@@ -8,7 +8,7 @@ import logging
 
 mydb.create_db_table()
 bot = telebot.TeleBot(config.token, threaded=False)
-logger = bot.logger
+logger = telebot.logger
 telebot.logger.setLevel(logging.DEBUG)
 bot.remove_webhook()
 bot.set_webhook(url="telegarmbot.herokuapp.com/{}".format(config.secret), max_connections=1)
