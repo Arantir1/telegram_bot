@@ -25,7 +25,7 @@ def create_db_table():
 def insert_word(message):
     connection = psycopg2.connect(host=config.Database.host, user=config.Database.user,
                                  password=config.Database.password, database=config.Database.database)
-    cursor = connection.cursor(buffered=True)
+    cursor = connection.cursor()
     last_dt = datetime.datetime.now()
     new_dt = last_dt + datetime.timedelta(days=1)
     cursor.execute("INSERT INTO dictionary VALUES (%(word)s, \
@@ -40,7 +40,7 @@ def insert_word(message):
 def get_words_by_cid(cid):
     connection = psycopg2.connect(host=config.Database.host, user=config.Database.user,
                                  password=config.Database.password, database=config.Database.database)
-    cursor = connection.cursor(buffered=True)
+    cursor = connection.cursor()
     cursor.execute("SELECT word from dictionary WHERE cid = %(cid)s;", {'cid': cid})
     words = []
     word = cursor.fetchone()
@@ -53,7 +53,7 @@ def get_words_by_cid(cid):
 def get_words():
     connection = psycopg2.connect(host=config.Database.host, user=config.Database.user,
                                  password=config.Database.password, database=config.Database.database)
-    cursor = connection.cursor(buffered=True)
+    cursor = connection.cursor()
     res = {}
     cids = []
     cursor.execute("SELECT DISTINCT cid FROM dictionary;")
