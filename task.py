@@ -11,7 +11,7 @@ def set_scheduler(remember_words, message):
     print("Setting schedule...")
     if (message.text == "/start"):
         scheduler = BackgroundScheduler()
-        scheduler.add_job(remember_words, trigger="interval", args=[message], hours=24)
+        scheduler.add_job(remember_words, trigger="interval", args=[message], minutes=5)
         scheduler.start()
         print("Schedule installed")
 
