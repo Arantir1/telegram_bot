@@ -5,6 +5,7 @@ import mydb
 import re
 import os
 import logging
+import task
 
 mydb.create_db_table()
 bot = telebot.TeleBot(config.token)
@@ -17,10 +18,10 @@ def telegram_webhook():
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
     return "!", 200
 
-# def remember_words(message):
-#     words = mydb.get_words_by_cid(message.chat.id)
-#     bot.send_message(message.chat.id, "Время повторить слова!")
-#     bot.send_message(message.chat.id, ''.join(str(word + ', ') for word in words))
+def remember_words(message):
+    words = mydb.get_words_by_cid(message.chat.id)
+    bot.send_message(message.chat.id, "Время повторить слова!")
+    bot.send_message(message.chat.id, ''.join(str(word + ', ') for word in words))
 
 def check_word(message):
     if (re.fullmatch(r'[A-zА-яЁё]{0,50}', message.text)):
@@ -37,7 +38,7 @@ def command_start(message):
     user_markup.row('/add_word')
     bot.send_message(message.from_user.id, """Привет! Давай выучим новые слова.
 Чтобы добавить слово нажми кнопку 'Добавить'""", reply_markup=user_markup)
-    # task.set_scheduler(remember_words, message)
+    task.set_scheduler(remember_words, message)
 
 
 @bot.message_handler(commands=['add_word'])

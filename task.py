@@ -3,17 +3,17 @@ import telebot
 import config
 import mydb
 # import flask_app
-# from apscheduler.schedulers.gevent import GeventScheduler
+from apscheduler.schedulers.gevent import GeventScheduler
 
 
 
-# def set_scheduler(remember_words, message):
-#     print("Setting schedule...")
-#     if (message.text == "/start"):
-#         scheduler = GeventScheduler()
-#         scheduler.add_job(remember_words, trigger="interval", args=[message], hours=24)
-#         scheduler.start()
-#         print("Schedule installed")
+def set_scheduler(remember_words, message):
+    print("Setting schedule...")
+    if (message.text == "/start"):
+        scheduler = GeventScheduler()
+        scheduler.add_job(remember_words, trigger="interval", args=[message], hours=24)
+        scheduler.start()
+        print("Schedule installed")
 
 
 bot = telebot.TeleBot(config.token, threaded=False)
