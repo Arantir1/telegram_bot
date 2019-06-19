@@ -1,13 +1,13 @@
 from flask import Flask, request
 import telebot
 import config
-import mydb
+from mydb import Mydb
 import re
 import os
 import logging
 import task
 
-mydb.create_db_table()
+db = Mydb()
 bot = telebot.TeleBot(config.token)
 logger = telebot.logger
 telebot.logger.setLevel(logging.DEBUG)
@@ -19,13 +19,13 @@ def telegram_webhook():
     return "!", 200
 
 def remember_words(message):
-    words = mydb.get_words_by_cid(message.chat.id)
+    words = db.get_words_by_cid(message.chat.id)
     bot.send_message(message.chat.id, "Время повторить слова!")
     bot.send_message(message.chat.id, ''.join(str(word + ', ') for word in words))
 
 def check_word(message):
     if (re.fullmatch(r'[A-zА-яЁё]{0,50}', message.text)):
-        mydb.insert_word(message)
+        db.insert_word(message)
         bot.send_message(message.chat.id, "Отлично! Я напомню тебе его!")
     else:
         user_markup = telebot.types.ReplyKeyboardMarkup(True, True)

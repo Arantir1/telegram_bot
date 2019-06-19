@@ -9,3 +9,4 @@ class Database ():
   user = 'sonskqfqihofvq'
   password='a6827bb71c1a8316e43da36a08c4bd302f0bb870214bd12c4bd6e6c4712ca654'
   database='dbi7isql5o217v'
+  port='5432'
