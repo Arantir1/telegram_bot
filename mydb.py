@@ -7,15 +7,8 @@ class Mydb():
     __engine = None
 
     def __init__(self):
-        self.__engine = create_engine("postgresql://%(user)s:%(password)s@%(host)s:%(port)s/%(database)s",
-            {
-                'user':config.user,
-                'password':config.password,
-                'host':config.host,
-                'port':config.port,
-                'database':config.database
-            }
-        ) 
+        self.__engine = create_engine("postgresql://%s:%s@%s:%s/%s" %
+            (config.user, config.password, config.host, config.port, config.database))
 
     def create_db_table(self):
         try:
