@@ -26,11 +26,7 @@ class Mydb():
         connection = self.__engine.connect()
         last_dt = datetime.datetime.now()
         new_dt = last_dt + datetime.timedelta(days=1)
-        connection.execute("INSERT INTO dictionary VALUES (:word, \
-                                                    :cid, \
-                                                    :last_repeat, \
-                                                    :iteration, \
-                                                    :next_repeat);",
+        connection.execute("INSERT INTO dictionary VALUES (:word, :cid, :last_repeat, :iteration, :next_repeat);",
         word=message.text, cid=message.chat.id, last_repeat=last_dt, iteration=1, next_repeat=new_dt)
         connection.close()
 
