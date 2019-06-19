@@ -7,18 +7,13 @@ class Mydb():
     __engine = None
 
     def __init__(self):
-        self.__engine = create_engine("postgresql://\
-                            %(user)s:\
-                            %(password)s@\
-                            %(host)s:\
-                            %(port)s\
-                            /%(database)s",
+        self.__engine = create_engine("postgresql://%(user)s:%(password)s@%(host)s:%(port)s/%(database)s",
             {
-                'user':config.Database.user,
-                'password':config.Database.password,
-                'host':config.Database.host,
-                'port':config.Database.port,
-                'database':config.Database.database
+                'user':config.user,
+                'password':config.password,
+                'host':config.host,
+                'port':config.port,
+                'database':config.database
             }
         ) 
 
