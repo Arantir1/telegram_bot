@@ -8,6 +8,7 @@ import logging
 import task
 
 db = Mydb()
+db.create_db_table()
 bot = telebot.TeleBot(config.token)
 logger = telebot.logger
 telebot.logger.setLevel(logging.DEBUG)
