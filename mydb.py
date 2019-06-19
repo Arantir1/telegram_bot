@@ -26,13 +26,17 @@ class Mydb():
         connection = self.__engine.connect()
         last_dt = datetime.datetime.now()
         new_dt = last_dt + datetime.timedelta(days=1)
-        connection.execute("INSERT INTO dictionary VALUES (:word, :cid, :last_repeat, :iteration, :next_repeat);",
-        word=message.text, cid=message.chat.id, last_repeat=last_dt, iteration=1, next_repeat=new_dt)
+        connection.execute("INSERT INTO dictionary VALUES (%(word)s, \
+                                                %(cid)s, \
+                                                %(last_repeat)s, \
+                                                %(iteration)s, \
+                                                %(next_repeat)s);",
+    {'word': message.text, 'cid': message.chat.id, 'last_repeat': last_dt, 'iteration': 1, 'next_repeat': new_dt})
         connection.close()
 
     def get_words_by_cid(self, cid):
         connection = self.__engine.connect()
-        result = connection.execute("SELECT word from dictionary WHERE cid=:cid;", cid=cid)
+        result = connection.execute("SELECT word from dictionary WHERE cid=%(cid)s;", {'cid': cid})
         words = []
         word = result.fetchone()
         while word is not None:
