@@ -44,7 +44,7 @@ def command_start(message):
     user_markup.row('/add_word')
     bot.send_message(message.from_user.id, """Привет! Давай выучим новые слова.
 Чтобы добавить слово нажми кнопку 'Добавить'""", reply_markup=user_markup)
-    app.apscheduler.add_job(func=remember_words, trigger='interval', minutes=5, args=[message], id=str(message)
+    app.apscheduler.add_job(func=remember_words, trigger='interval', minutes=5, args=[message], id=str(message))
 
 
 @bot.message_handler(commands=['add_word'])
