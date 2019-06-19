@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask_apscheduler import APScheduler
 import telebot
 import config
 from mydb import Mydb
@@ -14,6 +15,10 @@ logger = telebot.logger
 telebot.logger.setLevel(logging.DEBUG)
 
 app = Flask(__name__)
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
+
 @app.route('/{}'.format(config.secret), methods=["POST"])
 def telegram_webhook():
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
@@ -39,7 +44,7 @@ def command_start(message):
     user_markup.row('/add_word')
     bot.send_message(message.from_user.id, """Привет! Давай выучим новые слова.
 Чтобы добавить слово нажми кнопку 'Добавить'""", reply_markup=user_markup)
-    task.set_scheduler(remember_words, message)
+    app.apscheduler.add_job(func=remember_words, trigger='interval', minutes=5, args=[message])
 
 
 @bot.message_handler(commands=['add_word'])
