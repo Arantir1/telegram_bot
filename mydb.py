@@ -1,4 +1,3 @@
-# import psycopg2
 import datetime
 import config
 from sqlalchemy import create_engine, exc
