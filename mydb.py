@@ -35,7 +35,7 @@ class Mydb():
 
     def get_words_by_cid(self, cid):
         connection = self.__engine.connect()
-        result = connection.execute("SELECT word from dictionary WHERE cid=%(cid)s;", {'cid': cid})
+        result = connection.execute("SELECT word from dictionary WHERE cid=%(cid)s;", {'cid': str(cid)})
         words = []
         word = result.fetchone()
         while word is not None:
