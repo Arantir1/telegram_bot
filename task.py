@@ -9,6 +9,8 @@ class MyScheduler:
 
     def __init__(self):
         self.__scheduler = BackgroundScheduler({'apscheduler.timezone': 'UTC'})
+        self.__scheduler.remove_all_jobs()
+        self.__scheduler.shutdown()
         self.__scheduler.start()
 
     def set_scheduler(self, remember_words, message):
