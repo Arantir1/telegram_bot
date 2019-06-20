@@ -23,7 +23,7 @@ class MyScheduler:
 
     def set_scheduler(self, remember_words, message):
         print("Setting schedule...")
-        self.__scheduler.add_job(remember_words, trigger="interval", args=[message], minutes=5, id=message.from_user.id)
+        self.__scheduler.add_job(func=remember_words, trigger="interval", args=[message], minutes=5, id=message.from_user.id)
         print("Schedule installed")
 
     def remove_scheduler(self, user_id):
