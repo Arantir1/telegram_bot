@@ -8,7 +8,7 @@ import config
 from mydb import Mydb
 
 db = Mydb()
-sheduler = MyScheduler()
+scheduler = MyScheduler()
 bot = telebot.TeleBot(config.token)
 
 db.create_db_table()
@@ -42,8 +42,7 @@ def command_start(message):
     user_markup.row('/add_word')
     bot.send_message(message.from_user.id, """Привет! Давай выучим новые слова.
 Чтобы добавить слово нажми кнопку 'Добавить'""", reply_markup=user_markup)
-    job = scheduler.set_scheduler(remember_words, message)
-    print("job details: %s" % job)
+    scheduler.set_scheduler(remember_words, message)
 
 
 @bot.message_handler(commands=['add_word'])
