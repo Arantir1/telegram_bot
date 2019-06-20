@@ -1,5 +1,7 @@
 from flask import Flask, request
-from flask_apscheduler import APScheduler
+# from flask_apscheduler import APScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
+# from datetime import datetime
 import telebot
 import config
 from mydb import Mydb
@@ -15,8 +17,7 @@ logger = telebot.logger
 telebot.logger.setLevel(logging.DEBUG)
 
 app = Flask(__name__)
-scheduler = APScheduler()
-scheduler.init_app(app)
+scheduler = BackgroundScheduler({'apscheduler.timezone': 'UTC'})
 scheduler.start()
 
 @app.route('/{}'.format(config.secret), methods=["POST"])
@@ -44,7 +45,8 @@ def command_start(message):
     user_markup.row('/add_word')
     bot.send_message(message.from_user.id, """Привет! Давай выучим новые слова.
 Чтобы добавить слово нажми кнопку 'Добавить'""", reply_markup=user_markup)
-    app.apscheduler.add_job(func=remember_words, trigger='interval', minutes=5, args=[message], id=str(message))
+    job = scheduler.add_job(func=remember_words, trigger='interval', minutes=5, args=[message])
+    print("job details: %s" % job)
 
 
 @bot.message_handler(commands=['add_word'])
