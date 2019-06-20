@@ -25,5 +25,4 @@ class MyScheduler:
         print("Setting schedule...")
         if (message.text == "/start"):
             self.__scheduler.add_job(remember_words, trigger="interval", args=[message], minutes=5)
-            self.__scheduler.start()
             print("Schedule installed")
