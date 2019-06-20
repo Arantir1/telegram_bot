@@ -1,24 +1,21 @@
 from flask import Flask, request
-# from flask_apscheduler import APScheduler
-from apscheduler.schedulers.background import BackgroundScheduler
-# from datetime import datetime
 import telebot
-import config
-from mydb import Mydb
 import re
 import os
 import logging
-import task
+from task import MyScheduler
+import config
+from mydb import Mydb
 
 db = Mydb()
-db.create_db_table()
+sheduler = MyScheduler()
 bot = telebot.TeleBot(config.token)
+
+db.create_db_table()
 logger = telebot.logger
 telebot.logger.setLevel(logging.DEBUG)
 
 app = Flask(__name__)
-scheduler = BackgroundScheduler({'apscheduler.timezone': 'UTC'})
-scheduler.start()
 
 @app.route('/{}'.format(config.secret), methods=["POST"])
 def telegram_webhook():
@@ -45,7 +42,7 @@ def command_start(message):
     user_markup.row('/add_word')
     bot.send_message(message.from_user.id, """Привет! Давай выучим новые слова.
 Чтобы добавить слово нажми кнопку 'Добавить'""", reply_markup=user_markup)
-    job = scheduler.add_job(func=remember_words, trigger='interval', minutes=5, args=[message])
+    job = scheduler.set_scheduler(remember_words, message)
     print("job details: %s" % job)
 
 
