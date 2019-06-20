@@ -17,6 +17,10 @@ class MyScheduler:
             print("Scheduler is stopped")
         self.__scheduler.start()
 
+    def __del__(self):
+        self.__scheduler.remove_all_jobs()
+        self.__scheduler.shutdown()
+
     def set_scheduler(self, remember_words, message):
         print("Setting schedule...")
         if (message.text == "/start"):
