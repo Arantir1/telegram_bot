@@ -56,5 +56,9 @@ def webhook():
     bot.set_webhook(url="telegarmbot.herokuapp.com/{}".format(config.secret), max_connections=1)
     return "!", 200
 
+@bot.message_handler(commands=['stop'])
+def command_stop(message):
+    scheduler.remove_scheduler(message.from_user.id)
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
