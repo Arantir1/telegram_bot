@@ -58,3 +58,17 @@ class Mydb():
         connection.close()
         return res
 
+    def delete_word_by_cid(self, word, cid):
+        connection = self.__engine.connect()
+        connection.execute("DELETE FROM dictionary WHERE cid=%(cid)s AND word=%(word)s;", {'cid': str(cid), 'word': word})
+        connection.close()
+
+    def is_word_exist(self, word, cid):
+        connection = self.__engine.connect()
+        result = connection.execute("SELECT FROM dictionary WHERE cid=%(cid)s AND word=%(word)s;", {'cid': str(cid), 'word': word})
+        row = result.fetchone()
+        connection.close()
+        if row is None:
+            return False
+        else:
+            return True
