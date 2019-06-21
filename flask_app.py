@@ -27,15 +27,26 @@ def remember_words(message):
     bot.send_message(message.chat.id, "Время повторить слова!")
     bot.send_message(message.chat.id, ''.join(str(word + ', ') for word in words))
 
-def check_word(message):
-    if (re.fullmatch(r'[A-zА-яЁё]{0,50}', message.text)):
-        db.insert_word(message)
-        bot.send_message(message.chat.id, "Отлично! Я напомню тебе его!")
+def delete_word(message):
+    if (not db.is_word_exist(message.text, message.chat.id)):
+        bot.send_message(message.chat.id, "Такого слова нету!")
     else:
+        db.delete_word_by_cid(message.text, message.chat.id)
+        bot.send_message(message.chat.id, "Слово удалено")
+
+def check_word(message):
+    if (not re.fullmatch(r'[A-zА-яЁё]{0,50}', message.text)):
         user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
         user_markup.row('/add_word')
         bot.send_message(message.chat.id, "Хмм.. Не похоже на слово. Попробуй еще раз", reply_markup=user_markup)
-
+    elif (not db.is_word_exist(message.text, message.chat.id)):
+        user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
+        user_markup.row('/add_word')
+        bot.send_message(message.chat.id, "Это слово уже в словаре!")
+    else:
+        db.insert_word(message)
+        bot.send_message(message.chat.id, "Отлично! Я напомню тебе его!")
+        
 @bot.message_handler(commands=['start'])
 def command_start(message):
     user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
@@ -47,8 +58,13 @@ def command_start(message):
 
 @bot.message_handler(commands=['add_word'])
 def add_word(message):
-    bot.send_message(message.chat.id, "Введите слово")
+    bot.send_message(message.chat.id, "Введите слово, чтобы добавить его")
     bot.register_next_step_handler(message, check_word)
+
+@bot.message_handler(commands=['remove_word'])
+def remove_word(message):
+    bot.send_message(message.chat.id, "Введите слово, чтобы удалить его")
+    bot.register_next_step_handler(message, delete_word)
 
 @app.route("/")
 def webhook():
@@ -61,7 +77,6 @@ def show_words(message):
     words = db.get_words_by_cid(message.chat.id)
     bot.send_message(message.chat.id, "Ваши слова:")
     bot.send_message(message.chat.id, ''.join(str(word + ', ') for word in words))
-
 
 @bot.message_handler(commands=['stop'])
 def command_stop(message):
