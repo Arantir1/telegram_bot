@@ -23,6 +23,7 @@ class MyScheduler:
 
     def set_scheduler(self, remember_words, message):
         print("Setting schedule...")
+        print("test message", message)
         self.__scheduler.add_job(func=remember_words, trigger="interval", args=[message], minutes=5, id=message.from_user.id)
         print("Schedule installed")
 
