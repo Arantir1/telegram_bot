@@ -39,7 +39,7 @@ def check_word(message):
         user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
         user_markup.row('/add_word')
         bot.send_message(message.chat.id, "Хмм.. Не похоже на слово. Попробуй еще раз", reply_markup=user_markup)
-    elif (not db.is_word_exist(message.text, message.chat.id)):
+    elif (db.is_word_exist(message.text, message.chat.id)):
         user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
         user_markup.row('/add_word')
         bot.send_message(message.chat.id, "Это слово уже в словаре!")
