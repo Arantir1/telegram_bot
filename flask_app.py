@@ -51,6 +51,9 @@ def check_word(message):
 def command_start(message):
     user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
     user_markup.row('/add_word')
+    user_markup.row('/remove_word')
+    user_markup.row('/show_words')
+    user_markup.row('/stop')
     bot.send_message(message.from_user.id, """Привет! Давай выучим новые слова.
 Чтобы добавить слово нажми кнопку 'Добавить'""", reply_markup=user_markup)
     scheduler.set_scheduler(remember_words, message)
