@@ -82,7 +82,7 @@ def show_words(message):
         bot.send_message(message.chat.id, "Ваши слова:")
         bot.send_message(message.chat.id, ''.join(str(word + ', ') for word in words))
     else:
-        bot.send_message(message.chat.id, "Ваш словарь пуст " + u"\UF09F9894")
+        bot.send_message(message.chat.id, "Ваш словарь пуст :pensive:")
 
 @bot.message_handler(commands=['stop'])
 def command_stop(message):
