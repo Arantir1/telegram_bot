@@ -78,8 +78,11 @@ def webhook():
 @bot.message_handler(commands=['show_words'])
 def show_words(message):
     words = db.get_words_by_cid(message.chat.id)
-    bot.send_message(message.chat.id, "Ваши слова:")
-    bot.send_message(message.chat.id, ''.join(str(word + ', ') for word in words))
+    if words:
+        bot.send_message(message.chat.id, "Ваши слова:")
+        bot.send_message(message.chat.id, ''.join(str(word + ', ') for word in words))
+    else:
+        bot.send_message(message.chat.id, "Ваш словарь пуст %F0%9F%98%94")
 
 @bot.message_handler(commands=['stop'])
 def command_stop(message):
