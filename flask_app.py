@@ -90,7 +90,7 @@ def command_stop(message):
     bot.send_message(message.chat.id, "Напиши '/start' когда решишь снова повторить ")
 
 @bot.message_handler(commands=['run_job'])
-def command_stop(message):
+def run_job(message):
     scheduler.start_job_now(str(message.from_user.id))
 
 if __name__ == "__main__":
