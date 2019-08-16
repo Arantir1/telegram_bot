@@ -21,7 +21,7 @@ class MyScheduler:
         self.__scheduler.shutdown()
 
     def is_job_running(self, id):
-        return any(job.id == id for job in self.__scheduler.get_all_jobs())
+        return any(job.id == id for job in self.__scheduler.get_jobs())
 
     def add_job(self, hour, minute, id, remember_words, message):
         self.__scheduler.add_job(func=remember_words, trigger="cron", args=[message], hour=hour, minute=minute, id=id, replace_existing=True)
@@ -33,7 +33,7 @@ class MyScheduler:
 
     def start_job_now(self, id):
         print("Starting the {0} job...".format(id))
-        next((job for job in self.__scheduler.get_all_jobs() if str(job.id) == id), None).func()
+        next((job for job in self.__scheduler.get_jobs() if str(job.id) == id), None).func()
 
     def set_scheduler(self, remember_words, message):
         print("Setting schedule...")
