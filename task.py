@@ -31,9 +31,9 @@ class MyScheduler:
         self.__scheduler.remove_job(job_id=id)
         print("Job {0} removed".format(id))  
 
-    def start_job_now(self, id):
+    def start_job_now(self, id, message):
         print("Starting the {0} job...".format(id))
-        next((job for job in self.__scheduler.get_jobs() if str(job.id) == id), None).func()
+        next((job for job in self.__scheduler.get_jobs() if str(job.id) == id), None).func(message)
 
     def set_scheduler(self, remember_words, message):
         print("Setting schedule...")
