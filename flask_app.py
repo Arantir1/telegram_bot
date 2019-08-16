@@ -89,5 +89,9 @@ def command_stop(message):
     scheduler.remove_scheduler(message.from_user.id)
     bot.send_message(message.chat.id, "Напиши '/start' когда решишь снова повторить ")
 
+@bot.message_handler(commands=['run_job'])
+def command_stop(message):
+    scheduler.start_job_now(str(message.from_user.id)
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
