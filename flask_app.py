@@ -91,7 +91,7 @@ def command_stop(message):
 
 @bot.message_handler(commands=['run_job'])
 def run_job(message):
-    scheduler.start_job_now(str(message.from_user.id))
+    scheduler.start_job_now(str(message.from_user.id), message)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
