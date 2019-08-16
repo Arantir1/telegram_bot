@@ -26,14 +26,14 @@ class MyScheduler:
 
     def add_job(self, hour, minute, id, remember_words, message):
         self.__scheduler.add_job(func=remember_words, trigger="cron", args=[message], hour=hour, minute=minute, id=id, replace_existing=True)
-        print("Job {1} added".format(id))    
+        print("Job {0} added".format(id))    
 
     def remove_job(self, id):
         self.__scheduler.remove_job(job_id=id)
-        print("Job {1} removed".format(id))  
+        print("Job {0} removed".format(id))  
 
     def start_job_now(self, id):
-        print("Starting the {1} job...".format(id))
+        print("Starting the {0} job...".format(id))
         next((job for job in BaseJobStore.get_all_jobs() if str(job.id) == id), None).func()
 
     def set_scheduler(self, remember_words, message):
