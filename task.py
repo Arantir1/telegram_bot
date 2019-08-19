@@ -23,8 +23,8 @@ class MyScheduler:
     def is_job_running(self, id):
         return any(job.id == id for job in self.__scheduler.get_jobs())
 
-    def add_job(self, hour, minute, id, remember_words, message):
-        self.__scheduler.add_job(func=remember_words, trigger="cron", args=[message], hour=hour, minute=minute, id=id, replace_existing=True)
+    def add_job(self, hour, minute, id, remember_words):
+        self.__scheduler.add_job(func=remember_words, trigger="cron", args=[id], hour=hour, minute=minute, id=id, replace_existing=True)
         print("Job {0} added".format(id))    
 
     def remove_job(self, id):
