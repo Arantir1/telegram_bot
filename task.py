@@ -8,7 +8,7 @@ class MyScheduler:
     __scheduler = None
 
     def __init__(self):
-        self.__scheduler = BackgroundScheduler({'apscheduler.timezone': 'UTC'})
+        self.__scheduler = BackgroundScheduler({'apscheduler.timezone': 'Europe/Minsk'})
         self.__scheduler.remove_all_jobs()
         try:
             self.__scheduler.shutdown()
