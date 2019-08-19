@@ -25,7 +25,6 @@ class MyScheduler:
 
     def add_job(self, hour, minute, id, remember_words):
         self.__scheduler.add_job(func=remember_words, trigger="cron", args=[id], hour=hour, minute=minute, id=id, replace_existing=True)
-        self.__scheduler.start()
         print("Job {0} added".format(id))  
 
     def remove_job(self, id):
