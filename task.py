@@ -34,13 +34,3 @@ class MyScheduler:
     def start_job_now(self, id, message):
         print("Starting the {0} job...".format(id))
         next((job for job in self.__scheduler.get_jobs() if str(job.id) == id), None).func(message)
-
-    def set_scheduler(self, remember_words, message):
-        print("Setting schedule...")
-        self.__scheduler.add_job( func=remember_words, trigger="interval", args=[message], minutes=5, id=str(message.from_user.id) )
-        print("Schedule installed")
-
-    def remove_scheduler(self, user_id):
-        print("Removing schedule...")
-        self.__scheduler.remove_job(job_id=str(user_id))
-        print("Schedule removed")
