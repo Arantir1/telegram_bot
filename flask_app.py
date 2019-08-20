@@ -22,6 +22,13 @@ def telegram_webhook():
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
     return "!", 200
 
+def set_markup():
+    user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
+    user_markup.row('/add_word', '/remove_word')
+    user_markup.row('run_job', 'set_job', 'remove_job')
+    user_markup.row('/show_words')
+    return user_markup
+
 def remember_words(id):
     words = db.get_words_by_cid(id)
     bot.send_message(id, "Время повторить слова!")
@@ -56,14 +63,9 @@ def set_job(message):
 
 @bot.message_handler(commands=['start'])
 def command_start(message):
-    user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
-    user_markup.row('/add_word')
-    user_markup.row('/remove_word')
-    user_markup.row('/show_words')
-    user_markup.row('/stop')
+    user_markup = set_markup()
     bot.send_message(message.from_user.id, """Привет! Давай выучим новые слова.
 Чтобы добавить слово нажми кнопку 'Добавить'""", reply_markup=user_markup)
-    # scheduler.set_scheduler(remember_words, message.from_user.id)
 
 
 @bot.message_handler(commands=['add_word'])
@@ -90,11 +92,6 @@ def show_words(message):
         bot.send_message(message.chat.id, ''.join(str(word + ', ') for word in words))
     else:
         bot.send_message(message.chat.id, "Ваш словарь пуст \U0001F614")
-
-@bot.message_handler(commands=['stop'])
-def command_stop(message):
-    scheduler.remove_scheduler(message.from_user.id)
-    bot.send_message(message.chat.id, "Напиши '/start' когда решишь снова повторить ")
 
 @bot.message_handler(commands=['run_job'])
 def run_job(message):
