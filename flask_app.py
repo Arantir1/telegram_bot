@@ -23,7 +23,7 @@ def telegram_webhook():
     return "!", 200
 
 def set_markup():
-    user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
+    user_markup = telebot.types.ReplyKeyboardMarkup(True)
     user_markup.row('/add_word', '/remove_word')
     user_markup.row('/run_job', '/set_job', '/remove_job')
     user_markup.row('/show_words')
