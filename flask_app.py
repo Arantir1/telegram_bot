@@ -95,7 +95,10 @@ def show_words(message):
 
 @bot.message_handler(commands=['run_job'])
 def run_job(message):
-    scheduler.start_job_now(str(message.from_user.id), message)
+    if scheduler.is_job_running(message.from_user.id):
+        scheduler.start_job_now(str(message.from_user.id), message)
+    else:
+        bot.send_message(message.chat.id, "Вы не назначили настройки изучения")
 
 @bot.message_handler(commands=['set_job'])
 def pre_set_job(message):
