@@ -34,7 +34,7 @@ def remember_words(id):
     translator = Translator()
     words = db.get_words_by_cid(id)
     bot.send_message(id, "Время повторить слова!")
-    bot.send_message(id, ''.join(str(translator.translate(str(word), dest='ru') + ', ') for word in words))
+    bot.send_message(id, ''.join(str(translator.translate(str(word), dest='ru').text + ', ') for word in words))
 
 def delete_word(message):
     if (not db.is_word_exist(message.text, message.chat.id)):
