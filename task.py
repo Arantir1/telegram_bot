@@ -1,4 +1,4 @@
-#!/usr/bin/python3.7
+#!/usr/bin/python3.6.8
 import telebot
 import config
 from apscheduler.schedulers.background import BackgroundScheduler
