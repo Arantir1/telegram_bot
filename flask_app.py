@@ -43,6 +43,11 @@ def check_answer(message):
         bot.send_message(message.chat.id,
                          "Введите '/run_job' когда захотите повторить",
                          reply_markup=user_markup)
+    else:
+        user_markup = set_standart_markup()
+        bot.send_message(message.chat.id,
+                         "Жаль :(",
+                         reply_markup=user_markup)
 
 
 def remember_words(message):
