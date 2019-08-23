@@ -47,7 +47,7 @@ class Mydb():
         result = connection.execute("SELECT word from dictionary \
                                      WHERE cid=%(cid)s;",
                                     {'cid': str(cid)})
-        words = list(result.fetchall())
+        words = result.fetchall()
         connection.close()
         return words
 
@@ -55,7 +55,7 @@ class Mydb():
         connection = self.__engine.connect()
         result = connection.execute("SELECT * FROM dictionary \
                                     WHERE date(next_repeat) <= current_date;")
-        lines = list(result.fetchall())
+        lines = result.fetchall()
         print('Lines: ', lines)
         connection.close()
         return lines
