@@ -37,7 +37,7 @@ def set_standart_markup():
 def check_answer(message):
     if 'yes' in message.text:
         # pass  # call function to start learning
-        print('Words: ',db.get_words_to_learn(message.from_user.id))
+        print('Words: ', db.get_words_to_learn(message.from_user.id))
     elif 'no' in message.text:
         user_markup = set_standart_markup()
         bot.send_message(message.chat.id,
@@ -132,7 +132,7 @@ def show_words(message):
 def run_job(message):
     print("Structure from message: ", message)
     if scheduler.is_job_running(message.from_user.id):
-        scheduler.start_job_now(str(message.from_user.id), message)
+        scheduler.start_job_now(message)
     else:
         bot.send_message(message.chat.id, "Вы не назначили настройки изучения")
 
