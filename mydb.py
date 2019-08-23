@@ -38,7 +38,7 @@ class Mydb():
                                                 %(iteration)s, \
                                                 'tomorrow'::TIMESTAMP);",
                            {'word': message.text,
-                            'cid': message.chat.id,
+                            'cid': str(message.chat.id),
                             'iteration': 1})
         connection.close()
 
@@ -54,7 +54,9 @@ class Mydb():
     def get_words_to_learn(self, cid):
         connection = self.__engine.connect()
         result = connection.execute("SELECT * FROM dictionary \
-                                    WHERE date(next_repeat) <= current_date;")
+                                    WHERE date(next_repeat) <= current_date\
+                                    AND cid=%(cid)s;",
+                                    {'cid': str(cid)})
         lines = result.fetchall()
         connection.close()
         return [[value for value in line.items()] for line in lines]

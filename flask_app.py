@@ -37,7 +37,7 @@ def set_standart_markup():
 def check_answer(message):
     if 'yes' in message.text:
         # pass  # call function to start learning
-        print('Words: ', db.get_words_to_learn(message.from_user.id))
+        print('Words: ', db.get_words_to_learn(str(message.from_user.id)))
     elif 'no' in message.text:
         user_markup = set_standart_markup()
         bot.send_message(message.chat.id,
