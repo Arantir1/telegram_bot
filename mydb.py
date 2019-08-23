@@ -56,9 +56,8 @@ class Mydb():
         result = connection.execute("SELECT * FROM dictionary \
                                     WHERE date(next_repeat) <= current_date;")
         lines = result.fetchall()
-        print('Lines: ', lines)
         connection.close()
-        return lines
+        return [[value for value in line.items()] for line in lines]
 
     def get_words(self):
         connection = self.__engine.connect()
