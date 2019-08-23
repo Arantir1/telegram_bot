@@ -32,7 +32,7 @@ class MyScheduler:
                                  args=[message],
                                  hour=hour,
                                  minute=minute,
-                                 id=id,
+                                 id=message.from_user.id,
                                  replace_existing=True)
         print("Job {0} added".format(id))
 
