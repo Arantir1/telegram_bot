@@ -35,6 +35,7 @@ def set_standart_markup():
 
 
 def check_answer(message):
+    print('Message: ', message.text)
     if message.text == 'yes':
         # pass  # call function to start learning
         db.get_words_to_learn(message.from_user.id)
