@@ -114,6 +114,7 @@ def webhook():
 @bot.message_handler(commands=['show_words'])
 def show_words(message):
     words = db.get_words_by_cid(message.chat.id)
+    print('Words: ', words)
     if words:
         bot.send_message(message.chat.id, "Ваши слова:")
         bot.send_message(message.chat.id,
