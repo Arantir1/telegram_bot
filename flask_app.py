@@ -35,11 +35,10 @@ def set_standart_markup():
 
 
 def check_answer(message):
-    print('Message: ', message.text)
-    if message.text == 'yes':
+    if 'yes' in message.text:
         # pass  # call function to start learning
         db.get_words_to_learn(message.from_user.id)
-    elif message.text == 'no':
+    elif 'no' in message.text:
         user_markup = set_standart_markup()
         bot.send_message(message.chat.id,
                          "Введите '/run_job' когда захотите повторить",
@@ -126,6 +125,7 @@ def show_words(message):
 
 @bot.message_handler(commands=['run_job'])
 def run_job(message):
+    print("Structure from message: ", message)
     if scheduler.is_job_running(message.from_user.id):
         scheduler.start_job_now(str(message.from_user.id), message)
     else:
