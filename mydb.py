@@ -49,7 +49,7 @@ class Mydb():
                                     {'cid': str(cid)})
         words = result.fetchall()
         connection.close()
-        return words
+        return [word['word'] for word in words]
 
     def get_words_to_learn(self, cid):
         connection = self.__engine.connect()
@@ -64,7 +64,7 @@ class Mydb():
         connection = self.__engine.connect()
         res = {}
         result = connection.execute("SELECT DISTINCT cid FROM dictionary;")
-        cids = list(result.fetchall())
+        cids = result.fetchall()
         for cid in cids:
             res.update({cid: self.get_words_by_cid(cid)})
         connection.close()
