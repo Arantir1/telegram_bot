@@ -32,15 +32,16 @@ class MyScheduler:
                                  args=[message],
                                  hour=hour,
                                  minute=minute,
-                                 id=str(message.from_user.id),
+                                 id=message.from_user.id,
                                  replace_existing=True)
-        print("Job {0} added".format(id))
+        print("Job {0} added".format(message.from_user.id))
 
     def remove_job(self, id):
         self.__scheduler.remove_job(job_id=id)
         print("Job {0} removed".format(id))
 
-    def start_job_now(self, id, message):
+    def start_job_now(self, message):
+        id = message.from_user.id
         print("Starting the {0} job...".format(id))
         next((job for job in self.__scheduler.get_jobs() if str(job.id) == id),
              None).func(message)
