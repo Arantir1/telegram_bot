@@ -35,6 +35,7 @@ class MyScheduler:
                                  id=str(message.from_user.id),
                                  replace_existing=True)
         print("Job {0} added".format(str(message.from_user.id)))
+        print("List of jobs: ", self.get_all_jobs())
 
     def remove_job(self, id):
         self.__scheduler.remove_job(job_id=id)
@@ -45,3 +46,6 @@ class MyScheduler:
         print("Starting the {0} job...".format(id))
         next((job for job in self.__scheduler.get_jobs() if str(job.id) == id),
              None).func(message)
+
+    def get_all_jobs(self):
+        return [job.id for job in self.__scheduler.get_jobs()]
