@@ -131,7 +131,7 @@ def show_words(message):
 @bot.message_handler(commands=['run_job'])
 def run_job(message):
     print("Structure from message: ", message)
-    print("Is job running? : ", scheduler.is_job_running(message.from_user.id))
+    print("Is job running? : ", scheduler.is_job_running(str(message.from_user.id)))
     if scheduler.is_job_running(message.from_user.id):
         scheduler.start_job_now(message)
     else:
