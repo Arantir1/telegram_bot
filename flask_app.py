@@ -34,11 +34,11 @@ def set_standart_markup():
 
 
 # def approve_word(message, word, iteration):
-def approve_word(list):
-    if 'yes' in list[0].text:
-        db.increment_iteration(list[1], list[0].chat.id, list[2])
-    elif 'no' in list[0].text:
-        db.decrement_iteration(list[1], list[0].chat.id, list[2])
+def approve_word(message, *args):
+    if 'yes' in message.text:
+        db.increment_iteration(args[0], message.chat.id, args[1])
+    elif 'no' in message.text:
+        db.decrement_iteration(args[0], message.chat.id, args[1])
 
 
 def check_answer(message):
@@ -47,13 +47,15 @@ def check_answer(message):
         q_markup.row('yes', 'no')
         print('List is: ', db.get_words_to_learn(str(message.from_user.id)))
         for line in db.get_words_to_learn(str(message.from_user.id)):
+            word = line[0][1]
+            iteration = line[3][1]
             bot.send_message(message.chat.id,
                              "Помните ли слово {0}?".format(line[0][1]),
                              reply_markup=q_markup)
-            bot.register_next_step_handler([message,
-                                           line[0][1],
-                                           line[3][1]],
-                                           approve_word)
+            bot.register_next_step_handler(message,
+                                           lambda m: approve_word(m,
+                                                                  word,
+                                                                  iteration))
         # print('Words: ', db.get_words_to_learn(str(message.from_user.id)))
     elif 'no' in message.text:
         user_markup = set_standart_markup()
