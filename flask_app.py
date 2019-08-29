@@ -47,11 +47,11 @@ def check_answer(message):
         print('List is: ', db.get_words_to_learn(str(message.from_user.id)))
         for line in db.get_words_to_learn(str(message.from_user.id)):
             bot.send_message(message.chat.id,
-                             "Помните ли слово {0}?".format(line['word']),
+                             "Помните ли слово {0}?".format(line[0][1]),
                              reply_markup=q_markup)
             bot.register_next_step_handler(message,
-                                           line['word'],
-                                           line['iteration'],
+                                           line[0][1],
+                                           line[3][1],
                                            approve_word)
         # print('Words: ', db.get_words_to_learn(str(message.from_user.id)))
     elif 'no' in message.text:
