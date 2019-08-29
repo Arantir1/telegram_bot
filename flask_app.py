@@ -33,10 +33,26 @@ def set_standart_markup():
     return user_markup
 
 
+def approve_word(message, word, iteration):
+    if 'yes' in message.text:
+        db.increment_iteration(word, message.chat.id, iteration)
+    elif 'no' in message.text:
+        db.decrement_iteration(word, message.chat.id, iteration)
+
+
 def check_answer(message):
     if 'yes' in message.text:
-        # pass  # call function to start learning
-        print('Words: ', db.get_words_to_learn(str(message.from_user.id)))
+        q_markup = telebot.types.ReplyKeyboardMarkup(True)
+        q_markup.row('yes', 'no')
+        for line in db.get_words_to_learn(str(message.from_user.id)):
+            bot.send_message(message.chat.id,
+                             "Помните ли слово {0}?".format(line['word']),
+                             reply_markup=q_markup)
+            bot.register_next_step_handler(message,
+                                           line['word'],
+                                           line['iteration'],
+                                           approve_word)
+        # print('Words: ', db.get_words_to_learn(str(message.from_user.id)))
     elif 'no' in message.text:
         user_markup = set_standart_markup()
         bot.send_message(message.chat.id,
