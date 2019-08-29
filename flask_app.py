@@ -44,6 +44,7 @@ def check_answer(message):
     if 'yes' in message.text:
         q_markup = telebot.types.ReplyKeyboardMarkup(True)
         q_markup.row('yes', 'no')
+        print('List is: ', db.get_words_to_learn(str(message.from_user.id)))
         for line in db.get_words_to_learn(str(message.from_user.id)):
             bot.send_message(message.chat.id,
                              "Помните ли слово {0}?".format(line['word']),
