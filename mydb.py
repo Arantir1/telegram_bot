@@ -105,7 +105,7 @@ class Mydb():
         connection.execute("UPDATE dictionary \
                             SET last_repeat = now(), \
                                 iteration = %(iter)s, \
-                                next_repeat = now() + INTERVAL'%(int)d DAY' \
+                                next_repeat = now() + INTERVAL'%(int)s DAY' \
                             WHERE cid=%(cid)s AND word=%(word)s;",
                            {'iter': iteration, 'int': interval,
                             'cid': cid, 'word': word})
@@ -125,7 +125,7 @@ class Mydb():
         connection.execute("UPDATE dictionary \
                             SET last_repeat = now(), \
                                 iteration = %(iter)s, \
-                                next_repeat = now() + INTERVAL'%(int)d DAY' \
+                                next_repeat = now() + INTERVAL'%(int)s DAY' \
                             WHERE cid=%(cid)s AND word=%(word)s;",
                            {'iter': iteration, 'int': interval,
                             'cid': cid, 'word': word})
