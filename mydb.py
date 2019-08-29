@@ -90,3 +90,43 @@ class Mydb():
             return False
         else:
             return True
+
+    def increment_iteration(self, word, cid, iteration):
+        iteration += 1
+        if 1 <= iteration <= 3:
+            interval = 1
+        elif 4 <= iteration <= 5:
+            interval = 3
+        elif iteration == 6:
+            interval = 5
+        else:
+            interval = 1
+        connection = self.__engine.connect()
+        connection.execute("UPDATE dictionary \
+                            SET last_repeat = now(), \
+                                iteration = %(iter)s, \
+                                next_repeat = now() + INTERVAL'%(int)d DAY' \
+                            WHERE cid=%(cid)s AND word=%(word)s;",
+                           {'iter': iteration, 'int': interval,
+                            'cid': cid, 'word': word})
+        connection.close()
+
+    def decrement_iteration(self, word, cid, iteration):
+        iteration -= 1
+        if 1 <= iteration <= 3:
+            interval = 1
+        elif 4 <= iteration <= 5:
+            interval = 3
+        elif iteration == 6:
+            interval = 5
+        else:
+            interval = 1
+        connection = self.__engine.connect()
+        connection.execute("UPDATE dictionary \
+                            SET last_repeat = now(), \
+                                iteration = %(iter)s, \
+                                next_repeat = now() + INTERVAL'%(int)d DAY' \
+                            WHERE cid=%(cid)s AND word=%(word)s;",
+                           {'iter': iteration, 'int': interval,
+                            'cid': cid, 'word': word})
+        connection.close()

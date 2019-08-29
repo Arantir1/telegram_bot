@@ -5,7 +5,6 @@ import os
 import logging
 from task import MyScheduler
 import config
-from googletrans import Translator
 from mydb import Mydb
 
 db = Mydb()
