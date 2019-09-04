@@ -18,7 +18,7 @@ class Mydb():
         try:
             connection = self.__engine.connect()
             res = connection.execute("SELECT * FROM dictionary;")
-            print("Res is: ", res)
+            print("Res is: ", connection.fetchall(res))
             print("Table already exist!")
         except exc.NoSuchTableError:
             create_table_sql = "CREATE TABLE dictionary(word VARCHAR,\
