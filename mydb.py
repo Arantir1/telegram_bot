@@ -108,11 +108,12 @@ class Mydb():
                                 next_repeat = now() + INTERVAL'%(int)s DAY' \
                             WHERE cid=%(cid)s AND word=%(word)s;",
                            {'iter': iteration, 'int': interval,
-                            'cid': cid, 'word': word})
+                            'cid': str(cid), 'word': word})
         connection.close()
 
     def decrement_iteration(self, word, cid, iteration):
-        iteration -= 1
+        if iteration > 1:
+            iteration -= 1
         if 1 <= iteration <= 3:
             interval = 1
         elif 4 <= iteration <= 5:
