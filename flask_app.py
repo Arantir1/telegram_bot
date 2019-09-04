@@ -54,7 +54,7 @@ def approve_word(message, *args):
     except StopIteration:
         bot.send_message(message.chat.id,
                          "Тренировка окончена, до встречи!",
-                         reply_markup=q_markup)
+                         reply_markup=set_standart_markup())
 
 
 def check_answer(message):
@@ -65,6 +65,7 @@ def check_answer(message):
         for line in db.get_words_to_learn(str(message.from_user.id)):
             words.append((line[0][1], line[3][1]))
         i_words = iter(words)
+        print('Iterations: ', list(i_words))
         try:
             word, iteration = next(i_words)
             bot.send_message(message.chat.id,
@@ -78,17 +79,15 @@ def check_answer(message):
         except StopIteration:
             bot.send_message(message.chat.id,
                              "Тренировка окончена, до встречи!",
-                             reply_markup=q_markup)
+                             reply_markup=set_standart_markup())
     elif 'next time' in message.text:
-        user_markup = set_standart_markup()
         bot.send_message(message.chat.id,
                          "Введите '/run_job' когда захотите повторить",
                          reply_markup=set_standart_markup())
     else:
-        user_markup = set_standart_markup()
         bot.send_message(message.chat.id,
                          "Жаль :(",
-                         reply_markup=user_markup)
+                         reply_markup=set_standart_markup())
 
 
 def remember_words(message):
