@@ -128,5 +128,5 @@ class Mydb():
                                 next_repeat = now() + INTERVAL'%(int)s DAY' \
                             WHERE cid=%(cid)s AND word=%(word)s;",
                            {'iter': iteration, 'int': interval,
-                            'cid': cid, 'word': word})
+                            'cid': str(cid), 'word': word})
         connection.close()
