@@ -33,35 +33,57 @@ def set_standart_markup():
     return user_markup
 
 
-# def approve_word(message, word, iteration):
+# def approve_word(message, word, iteration, i_words):
 def approve_word(message, *args):
     if 'yes' in message.text:
         db.increment_iteration(args[0], message.chat.id, args[1])
     elif 'no' in message.text:
         db.decrement_iteration(args[0], message.chat.id, args[1])
+    q_markup = telebot.types.ReplyKeyboardMarkup(True)
+    q_markup.row('yes', 'no')
+    try:
+        word, iteration = next(args[2])
+        bot.send_message(message.chat.id,
+                         "Помнишь ли слово {0}?".format(word),
+                         reply_markup=q_markup)
+        bot.register_next_step_handler(message,
+                                       lambda m: approve_word(m,
+                                                              word,
+                                                              iteration,
+                                                              args[2]))
+    except StopIteration:
+        bot.send_message(message.chat.id,
+                         "Тренировка окончена, до встречи!",
+                         reply_markup=q_markup)
 
 
 def check_answer(message):
-    if 'yes' in message.text:
+    if 'ready' in message.text:
         q_markup = telebot.types.ReplyKeyboardMarkup(True)
         q_markup.row('yes', 'no')
-        print('List is: ', db.get_words_to_learn(str(message.from_user.id)))
+        words = []
         for line in db.get_words_to_learn(str(message.from_user.id)):
-            word = line[0][1]
-            iteration = line[3][1]
+            words.append((line[0][1], line[3][1]))
+        i_words = iter(words)
+        try:
+            word, iteration = next(i_words)
             bot.send_message(message.chat.id,
-                             "Помните ли слово {0}?".format(line[0][1]),
+                             "Помнишь ли слово {0}?".format(word),
                              reply_markup=q_markup)
             bot.register_next_step_handler(message,
                                            lambda m: approve_word(m,
                                                                   word,
-                                                                  iteration))
-        # print('Words: ', db.get_words_to_learn(str(message.from_user.id)))
-    elif 'no' in message.text:
+                                                                  iteration,
+                                                                  i_words))
+        except StopIteration:
+            bot.send_message(message.chat.id,
+                             "Тренировка окончена, до встречи!",
+                             reply_markup=q_markup)
+    elif 'next time' in message.text:
         user_markup = set_standart_markup()
         bot.send_message(message.chat.id,
                          "Введите '/run_job' когда захотите повторить",
-                         reply_markup=user_markup)
+                         reply_markup=set_standart_markup())
     else:
         user_markup = set_standart_markup()
         bot.send_message(message.chat.id,
@@ -71,9 +93,9 @@ def check_answer(message):
 
 def remember_words(message):
     q_markup = telebot.types.ReplyKeyboardMarkup(True)
-    q_markup.row('yes', 'no')
+    q_markup.row('ready', 'next time')
     bot.send_message(message.from_user.id,
-                     "Время повторить слова!",
+                     "Готов повторить слова?",
                      reply_markup=q_markup)
     bot.register_next_step_handler(message, check_answer)
     # bot.send_message(id, ''.join(str(translator.translate(str(word),
@@ -166,8 +188,12 @@ def pre_set_job(message):
 
 @bot.message_handler(commands=['remove_job'])
 def remove_job(message):
-    scheduler.remove_job(message.from_user.id)
-    bot.send_message(message.chat.id, "Напоминание отключено.")
+    cid = message.from_user.id
+    if scheduler.is_job_running(cid):
+        scheduler.remove_job(cid)
+        bot.send_message(message.chat.id, "Напоминание отключено.")
+    else:
+        bot.send_message(message.chat.id, "Напоминание отсутствует.")
 
 
 if __name__ == "__main__":
