@@ -1,5 +1,6 @@
 import config
-from sqlalchemy import create_engine, exc
+import sqlalchemy
+# import psycopg2
 
 
 class Mydb():
@@ -7,12 +8,25 @@ class Mydb():
     __engine = None
 
     def __init__(self):
-        self.__engine = create_engine("postgresql://%s:%s@%s:%s/%s" %
-                                      (config.user,
-                                       config.password,
-                                       config.host,
-                                       config.port,
-                                       config.database))
+        # self.__engine = sqlalchemy.create_engine(
+        #     sqlalchemy.engine.url.URL(
+        #         drivername='postgres+psycopg2',
+        #         username=config.user,
+        #         password=config.password,
+        #         database=config.database,
+        #         query={
+        #             'unix_sock': '/cloudsql/{}/.s.PGSQL.5432'.format(
+        #                 config.cloud_sql)
+        #         }
+        #     )
+        # )
+        # '/cloudsql/{}/.s.PGSQL.5432'
+        self.__engine = sqlalchemy.create_engine(
+            "postgresql://%s:%s@/%s?host=%s" %
+            (config.user,
+             config.password,
+             config.database,
+             config.host))
 
     def create_db_table(self):
         try:
@@ -20,7 +34,7 @@ class Mydb():
             res = connection.execute("SELECT * FROM dictionary;")
             print("Res is: ", res.fetchall())
             print("Table already exist!")
-        except exc.NoSuchTableError:
+        except sqlalchemy.exc.ProgrammingError:
             create_table_sql = "CREATE TABLE dictionary(word VARCHAR,\
                                                        cid VARCHAR,\
                                                        last_repeat TIMESTAMP,\
