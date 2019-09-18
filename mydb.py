@@ -1,6 +1,5 @@
 import config
 import sqlalchemy
-# import psycopg2
 
 
 class Mydb():
@@ -8,27 +7,15 @@ class Mydb():
     __engine = None
 
     def __init__(self):
-        # self.__engine = sqlalchemy.create_engine(
-        #     sqlalchemy.engine.url.URL(
-        #         drivername='postgres+psycopg2',
-        #         username=config.user,
-        #         password=config.password,
-        #         database=config.database,
-        #         query={
-        #             'unix_sock': '/cloudsql/{}/.s.PGSQL.5432'.format(
-        #                 config.cloud_sql)
-        #         }
-        #     )
-        # )
-        # '/cloudsql/{}/.s.PGSQL.5432'
         self.__engine = sqlalchemy.create_engine(
             "postgresql://%s:%s@/%s?host=%s" %
             (config.user,
              config.password,
              config.database,
              config.host))
+        self.__create_word_table()
 
-    def create_db_table(self):
+    def __create_word_table(self):
         try:
             connection = self.__engine.connect()
             res = connection.execute("SELECT * FROM dictionary;")

@@ -11,7 +11,6 @@ db = Mydb()
 scheduler = MyScheduler()
 bot = telebot.TeleBot(config.token)
 
-db.create_db_table()
 logger = telebot.logger
 telebot.logger.setLevel(logging.DEBUG)
 
@@ -22,6 +21,14 @@ app = Flask(__name__)
 def telegram_webhook():
     json_string = request.stream.read().decode('utf-8')
     bot.process_new_updates([telebot.types.Update.de_json(json_string)])
+    return "!", 200
+
+
+@app.route("/")
+def webhook():
+    bot.remove_webhook()
+    bot.set_webhook(url="{}/{}".format(config.url, config.secret),
+                    max_connections=1)
     return "!", 200
 
 
@@ -148,14 +155,6 @@ def remove_word(message):
     bot.register_next_step_handler(message, delete_word)
 
 
-@app.route("/")
-def webhook():
-    bot.remove_webhook()
-    bot.set_webhook(url="telegarmbot.herokuapp.com/{}".format(config.secret),
-                    max_connections=1)
-    return "!", 200
-
-
 @bot.message_handler(commands=['show_words'])
 def show_words(message):
     words = db.get_words_by_cid(message.chat.id)
@@ -193,6 +192,17 @@ def remove_job(message):
         bot.send_message(message.chat.id, "Напоминание отключено.")
     else:
         bot.send_message(message.chat.id, "Напоминание отсутствует.")
+
+
+@bot.message_handler(commands=['show_job'])
+def job_info(message):
+    job = scheduler.show_job(str(message.from_user.id))
+    if job:
+        bot.send_message(message.chat.id,
+                         'Настройки: id: {}, trigger: {}'.format(job.id,
+                                                                 job.trigger))
+    else:
+        bot.send_message(message.chat.id, 'Настройки не заданы')
 
 
 if __name__ == "__main__":
