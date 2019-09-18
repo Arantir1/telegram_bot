@@ -97,13 +97,13 @@ def check_answer(message):
                          reply_markup=set_standart_markup())
 
 
-def remember_words(message):
+def remember_words(cid):
     q_markup = telebot.types.ReplyKeyboardMarkup(True)
     q_markup.row('ready', 'next time')
-    bot.send_message(message.from_user.id,
+    bot.send_message(cid,
                      "Готов повторить слова?",
                      reply_markup=q_markup)
-    bot.register_next_step_handler(message, check_answer)
+    bot.register_next_step_handler_by_chat_id(cid, check_answer)
     # bot.send_message(id, ''.join(str(translator.translate(str(word),
     # dest='ru').text + ', ') for word in words))
 
@@ -131,7 +131,7 @@ def set_job(message):
     res = re.findall(r'((\d|[01]\d|2[0-3]):([0-5]\d)|24:00)', message.text)
     hour = res[0][1]
     minute = res[0][2]
-    scheduler.add_job(hour, minute, remember_words, message)
+    scheduler.add_job(hour, minute, remember_words, message.from_user.id)
     bot.send_message(message.from_user.id,
                      "Отлично! Будем повторять в {0}:{1}".format(hour, minute))
 
