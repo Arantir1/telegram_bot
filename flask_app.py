@@ -5,7 +5,7 @@ import os
 import logging
 from task import MyScheduler
 import config
-from mydb import Mydb
+from db.mydb import Mydb
 
 db = Mydb()
 scheduler = MyScheduler()
@@ -43,9 +43,9 @@ def set_standart_markup():
 # def approve_word(message, word, iteration, i_words):
 def approve_word(message, *args):
     if 'yes' in message.text:
-        db.increment_iteration(args[0], message.chat.id, args[1])
+        db.increment_iteration(args[0], message.chat.id)
     elif 'no' in message.text:
-        db.decrement_iteration(args[0], message.chat.id, args[1])
+        db.decrement_iteration(args[0], message.chat.id)
     q_markup = telebot.types.ReplyKeyboardMarkup(True)
     q_markup.row('yes', 'no')
     try:
@@ -112,7 +112,7 @@ def delete_word(message):
     if (not db.is_word_exist(message.text, message.chat.id)):
         bot.send_message(message.chat.id, "Такого слова нету!")
     else:
-        db.delete_word_by_cid(message.text, message.chat.id)
+        db.delete_word(message.text, message.chat.id)
         bot.send_message(message.chat.id, "Слово удалено")
 
 
@@ -123,7 +123,7 @@ def check_word(message):
     elif (db.is_word_exist(message.text, message.chat.id)):
         bot.send_message(message.chat.id, "Это слово уже в словаре!")
     else:
-        db.insert_word(message)
+        db.insert_word(message.text, message.chat.id)
         bot.send_message(message.chat.id, "Отлично! Я напомню тебе его!")
 
 
