@@ -1,9 +1,9 @@
 from sqlalchemy import Date, cast
 from datetime import date, datetime, timedelta
 
-from basic import session_factory
-from word import Word
-from task import Task
+from db.basic import session_factory
+from db.word import Word
+from db.task import Task
 
 
 class Mydb():
@@ -19,13 +19,13 @@ class Mydb():
 
     def get_words_by_cid(self, cid):
         session = session_factory()
-        words_of_cid = session.query(Word).filter(Word.cid == cid)
+        words_of_cid = session.query(Word).filter(Word.cid == str(cid))
         session.close()
         return words_of_cid.all()
 
     def insert_word(self, word, cid):
         session = session_factory()
-        new_word = Word(word, cid)
+        new_word = Word(word, str(cid))
         session.add(new_word)
         session.commit()
         session.close()
@@ -34,28 +34,30 @@ class Mydb():
         session = session_factory()
         words_to_learn = session.query(Word)\
             .filter(cast(Word.next_repeat, Date) <= date.today(),
-                    Word.cid == cid)
+                    Word.cid == str(cid))
         session.close()
         return words_to_learn.all()
 
-    def is_word_exist(self, cid, word):
+    def is_word_exist(self, word, cid):
         session = session_factory()
         exist = session.query(Word)\
-            .filter(Word.word == word, Word.cid == cid).scalar() is not None
+            .filter(Word.word == word,
+                    Word.cid == str(cid))\
+            .scalar() is not None
         session.close()
         return exist
 
-    def delete_word(self, cid, word):
+    def delete_word(self, word, cid):
         session = session_factory()
-        word_to_delete = session.query(Word)\
-            .filter(Word.cid == cid, Word.word == word).one()
-        session.delete(word_to_delete)
+        session.query(Word)\
+            .filter(Word.cid == str(cid), Word.word == word).delete()
+        session.commit()
         session.close()
 
     def increment_iteration(self, word, cid):
         session = session_factory()
         modified_word = session.query(Word)\
-            .filter(Word.word == word, Word.cid == cid).one()
+            .filter(Word.word == word, Word.cid == str(cid)).one()
         now = datetime.now()
         modified_word.last_repeat = now
         modified_word.iteration += 1
@@ -78,7 +80,7 @@ class Mydb():
     def decrement_iteration(self, cid, word):
         session = session_factory()
         modified_word = session.query(Word)\
-            .filter(Word.word == word, Word.cid == cid).one()
+            .filter(Word.word == word, Word.cid == str(cid)).one()
         now = datetime.now()
         modified_word.last_repeat = now
         if modified_word.iteration > 1:

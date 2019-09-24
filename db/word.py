@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from sqlalchemy import Column, Integer, String, DateTime
 
-from basic import Base
+from db.basic import Base
 
 
 class Word(Base):
@@ -9,6 +9,7 @@ class Word(Base):
 
     now = datetime.now()
 
+    id = Column(Integer, autoincrement=True, primary_key=True)
     word = Column(String,)
     cid = Column(String,)
     last_repeat = Column(DateTime(), default=now)

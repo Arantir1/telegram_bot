@@ -162,7 +162,7 @@ def show_words(message):
     if words:
         bot.send_message(message.chat.id, "Ваши слова:")
         bot.send_message(message.chat.id,
-                         ''.join(str(word + ', ') for word in words))
+                         ''.join(str(word.word + ', ') for word in words))
     else:
         bot.send_message(message.chat.id, "Ваш словарь пуст \U0001F614")
 
