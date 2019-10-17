@@ -1,23 +1,27 @@
+
 from flask import Flask, request
+from flask.logging import create_logger
 import telebot
 import re
 import os
 import logging
 from task import MyScheduler
-import config
 from db.mydb import Mydb
 
 db = Mydb()
 scheduler = MyScheduler()
-bot = telebot.TeleBot(config.token)
+logging.getLogger('apscheduler').setLevel(logging.DEBUG)
+
+bot = telebot.TeleBot(os.getenv('TOKEN'), threaded=False)
+bot.enable_save_next_step_handlers(delay=2)
 
 logger = telebot.logger
 telebot.logger.setLevel(logging.DEBUG)
 
 app = Flask(__name__)
+log = create_logger(app)
 
-
-@app.route('/{}'.format(config.secret), methods=["POST"])
+@app.route('/{}'.format(os.getenv('SECRET')), methods=["POST"])
 def telegram_webhook():
     json_string = request.stream.read().decode('utf-8')
     bot.process_new_updates([telebot.types.Update.de_json(json_string)])
@@ -27,8 +31,8 @@ def telegram_webhook():
 @app.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url="{}/{}".format(config.url, config.secret),
-                    max_connections=1)
+    bot.set_webhook(url="{}/{}".format(os.getenv('URL'), os.getenv('SECRET')),
+                    max_connections=1, certificate=open('nginx-selfsigned.crt'))
     return "!", 200
 
 
@@ -69,8 +73,8 @@ def check_answer(message):
         q_markup = telebot.types.ReplyKeyboardMarkup(True)
         q_markup.row('yes', 'no')
         words = []
-        for line in db.get_words_to_learn(str(message.from_user.id)):
-            words.append((line[0][1], line[3][1]))
+        for word in db.get_words_to_learn(str(message.from_user.id)):
+            words.append((word.word, word.iteration))
         i_words = iter(words)
         print('Iterations: ', list(i_words))
         try:
@@ -98,6 +102,7 @@ def check_answer(message):
 
 
 def remember_words(cid):
+    log.debug('Cid is: {}'.format(cid))
     q_markup = telebot.types.ReplyKeyboardMarkup(True)
     q_markup.row('ready', 'next time')
     bot.send_message(cid,
@@ -138,6 +143,7 @@ def set_job(message):
 
 @bot.message_handler(commands=['start'])
 def command_start(message):
+    log.debug('GET MESSAGE: START!!!')
     user_markup = set_standart_markup()
     bot.send_message(message.from_user.id, """Привет! Давай выучим новые слова.
 Чтобы добавить слово нажми кнопку 'Добавить'""", reply_markup=user_markup)

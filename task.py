@@ -1,6 +1,5 @@
 #!/usr/bin/python3.6.8
 import telebot
-import config
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.schedulers import SchedulerNotRunningError
 
