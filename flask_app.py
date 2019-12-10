@@ -21,6 +21,7 @@ telebot.logger.setLevel(logging.DEBUG)
 app = Flask(__name__)
 log = create_logger(app)
 
+
 @app.route('/{}'.format(os.getenv('SECRET')), methods=["POST"])
 def telegram_webhook():
     json_string = request.stream.read().decode('utf-8')
@@ -31,8 +32,9 @@ def telegram_webhook():
 @app.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url="{}/{}".format(os.getenv('URL'), os.getenv('SECRET')),
-                    max_connections=1, certificate=open('nginx-selfsigned.crt'))
+    bot.set_webhook(url=f"{os.getenv('URL')}/{os.getenv('SECRET')}",
+                    max_connections=1,
+                    certificate=open('nginx-selfsigned.crt'))
     return "!", 200
 
 
@@ -76,7 +78,7 @@ def check_answer(message):
         for word in db.get_words_to_learn(str(message.from_user.id)):
             words.append((word.word, word.iteration))
         i_words = iter(words)
-        print('Iterations: ', list(i_words))
+        # print(f'Iterations: {list(i_words)}')
         try:
             word, iteration = next(i_words)
             bot.send_message(message.chat.id,
@@ -102,7 +104,7 @@ def check_answer(message):
 
 
 def remember_words(cid):
-    log.debug('Cid is: {}'.format(cid))
+    print(f'Cid is: {cid}')
     q_markup = telebot.types.ReplyKeyboardMarkup(True)
     q_markup.row('ready', 'next time')
     bot.send_message(cid,
@@ -164,7 +166,7 @@ def remove_word(message):
 @bot.message_handler(commands=['show_words'])
 def show_words(message):
     words = db.get_words_by_cid(message.chat.id)
-    print('Words: ', words)
+    print(f'Words: {words}')
     if words:
         bot.send_message(message.chat.id, "Ваши слова:")
         bot.send_message(message.chat.id,

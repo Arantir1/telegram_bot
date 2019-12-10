@@ -34,23 +34,23 @@ class MyScheduler:
                                  minute=minute,
                                  id=str(cid),
                                  replace_existing=True)
-        print("Job {0} added".format(str(cid)))
+        print(f"Job {str(cid)} added")
 
     def remove_job(self, id):
         self.__scheduler.remove_job(job_id=id)
-        print("Job {0} removed".format(id))
+        print(f"Job {id} removed")
 
     def show_job(self, id):
         job = self.__scheduler.get_job(id)
-        print('Your job: ', job)
-        print("List of jobs: ", self.get_all_jobs())
+        print(f'Your job: {job}')
+        print(f"List of jobs: {self.get_all_jobs()}")
         return job
 
     def start_job_now(self, message):
         id = str(message.from_user.id)
         print("Starting the {0} job...".format(id))
         next((job for job in self.__scheduler.get_jobs() if str(job.id) == id),
-             None).func(message)
+             None).func(message.from_user.id)
 
     def get_all_jobs(self):
         return [job.id for job in self.__scheduler.get_jobs()]

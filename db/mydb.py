@@ -77,7 +77,7 @@ class Mydb():
         session.commit()
         session.close()
 
-    def decrement_iteration(self, cid, word):
+    def decrement_iteration(self, word, cid):
         session = session_factory()
         modified_word = session.query(Word)\
             .filter(Word.word == word, Word.cid == str(cid)).one()
