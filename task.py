@@ -24,7 +24,7 @@ class MyScheduler:
         print("Scheduler has stopped")
 
     def is_job_running(self, id):
-        return any(job.id == id for job in self.__scheduler.get_jobs())
+        return any(job.id == str(id) for job in self.__scheduler.get_jobs())
 
     def add_job(self, hour, minute, remember_words, cid):
         self.__scheduler.add_job(func=remember_words,
@@ -37,11 +37,11 @@ class MyScheduler:
         print(f"Job {str(cid)} added")
 
     def remove_job(self, id):
-        self.__scheduler.remove_job(job_id=id)
+        self.__scheduler.remove_job(job_id=str(id))
         print(f"Job {id} removed")
 
     def show_job(self, id):
-        job = self.__scheduler.get_job(id)
+        job = self.__scheduler.get_job(str(id))
         print(f'Your job: {job}')
         print(f"List of jobs: {self.get_all_jobs()}")
         return job
