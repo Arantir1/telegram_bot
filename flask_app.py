@@ -1,4 +1,3 @@
-
 from flask import Flask, request
 from flask.logging import create_logger
 import telebot
@@ -22,8 +21,9 @@ app = Flask(__name__)
 log = create_logger(app)
 
 
-@app.route('/{}'.format(os.getenv('SECRET')), methods=["POST"])
+@app.route(f"/{os.getenv('SECRET')}", methods=["POST"])
 def telegram_webhook():
+    log.debug(f"{os.getenv('URL')=}")
     json_string = request.stream.read().decode('utf-8')
     bot.process_new_updates([telebot.types.Update.de_json(json_string)])
     return "!", 200
@@ -31,7 +31,6 @@ def telegram_webhook():
 
 @app.route("/")
 def webhook():
-    bot.remove_webhook()
     bot.set_webhook(url=f"{os.getenv('URL')}/{os.getenv('SECRET')}",
                     max_connections=1,
                     certificate=open('nginx-selfsigned.crt'))
@@ -143,6 +142,17 @@ def set_job(message):
                      "Отлично! Будем повторять в {0}:{1}".format(hour, minute))
 
 
+def word_info(message):
+    if (word:=db.get_word_information(word=message.text,
+                                      cid=message.from_user.id))\
+                                        is not None:
+        bot.send_message(message.from_user.id,
+                         f'Слово: {word.word}\
+                           Последнее повторение: {word.last_repeat}\
+                           Итерация: {word.iteration}\
+                           Следующее повторение: {word.next_repeat}')
+
+
 @bot.message_handler(commands=['start'])
 def command_start(message):
     log.debug('GET MESSAGE: START!!!')
@@ -207,10 +217,15 @@ def job_info(message):
     job = scheduler.show_job(str(message.from_user.id))
     if job:
         bot.send_message(message.chat.id,
-                         'Настройки: id: {}, trigger: {}'.format(job.id,
-                                                                 job.trigger))
+                         f'Настройки: id: {job.id}, trigger: {job.trigger}')
     else:
         bot.send_message(message.chat.id, 'Настройки не заданы')
+
+
+@bot.message_handler(commands=['word_info'])
+def get_word_info(message):
+    bot.send_message(message.chat.id, "Какое слово интересует?")
+    bot.register_next_step_handler(message, word_info)
 
 
 if __name__ == "__main__":

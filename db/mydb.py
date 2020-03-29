@@ -93,3 +93,10 @@ class Mydb():
             print("Iteration is: ", modified_word.iteration)
         session.commit()
         session.close()
+
+    def get_word_information(self, word, cid):
+        session = session_factory()
+        word_info = session.query(Word)\
+            .filter(Word.word == word, Word.cid == str(cid)).one()
+        session.close()
+        return word_info
